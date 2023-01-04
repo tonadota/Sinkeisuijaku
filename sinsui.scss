@@ -1,4 +1,7 @@
 @charset 'UTF-8';
+//ここでデバックモードをon,offにするかを選んでください。
+$debugMode: false; //true→on, false→off
+
 html{
   box-sizing: border-box;
 }
@@ -16,19 +19,15 @@ td.card{
   cursor: pointer;
   position: relative;
   &.back{
-    //background-image: url(images/z01.gif) !important;
-    top: 2px;
+    @if $debugMode {
+      top: 2px;
+    }
+    @else {
+      background-image: url(images/z01.gif) !important;
+    }
   }
   &.finish{
     background-image: none !important;
     cursor: default;
   }
-}
-#1 {
-  font-size: 1.5em;
-  float: left;
-}
-#2 {
-  float: right;
-  font-size: 1.0em;
 }

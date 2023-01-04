@@ -21,21 +21,11 @@ td.card {
 }
 
 td.card.back {
-  top: 2px;
+  background-image: url(images/z01.gif) !important;
 }
 
 td.card.finish {
   background-image: none !important;
   cursor: default;
-}
-
-#1 {
-  font-size: 1.5em;
-  float: left;
-}
-
-#2 {
-  float: right;
-  font-size: 1.0em;
 }
 /*# sourceMappingURL=sinsui.css.map */

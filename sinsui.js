@@ -8,6 +8,8 @@ var backTimer;
 var elapsedTime;
 var cards = [];
 var SL;
+var finish = false;
+var result = document.getElementById('result');
 
 window.onload = function(){
 
@@ -22,7 +24,7 @@ window.onload = function(){
 
   const suits = ['s','d','h','c'];
   shuffle(suits);
-  SL = suits.length/2;
+  SL = suits.length;
 
   for(let i=0; i<SL; i++){
     for (let j=1; j<=13; j++){
@@ -49,9 +51,9 @@ window.onload = function(){
     }
   }
   startTime = new Date();
-  startTimer();
-  }
 
+  startTimer();
+}
 
 
 function shuffle(cards){
@@ -67,9 +69,13 @@ function shuffle(cards){
 
 
 
+
+
+
 function turn(e){
+  let sec = 2.5;
   let td = e.target;
-  //var turnTimerId = NaN;
+  
   var pair = document.getElementById('pair');
   if(!td.classList.contains('back') || backTimer){
     return; //表のカードをクリックしてもそのままお返しされ何も起こらない。
@@ -86,18 +92,29 @@ function turn(e){
         firstCard.classList.add('finish');
         td.classList.add('finish');
         firstCard = null;
-        td.insertAdjacentHTML("beforeend", "+1 pair!");
-        if(countUnit == 1){
-          pair.innerHTML = "You get " + countUnit + "pair. Conplete collecting until " + cards.length / 2 + ".";
-        } else if(countUnit < cards.length/2) {
-          pair.innerHTML = "You get " + countUnit + "pairs. Conplete collecting until " + cards.length / 2 + ".";
-        } else {
-          clearInterval(timer);
-          time.innerHTML = "Conplete with " + cards.length/2 + " pairs! ClearTime is " + elapsedTime + " seconds.";
-          pair.innerHTML = "";
+        if(!finish){
+          td.insertAdjacentHTML("beforeend", "+1 pair!");
+          setTimeout(function(){
+            td.innerHTML = "";
+          }, 1000);
+          if(countUnit == 1){
+            pair.innerHTML = "You've got " + countUnit + "pair! Complete collecting until " + SL*13/2  + "pairs.";
+            setTimeout(function(){
+              pair.innerHTML = "";
+            }, sec*1000);
+          } else if(countUnit < cards.length/2) {
+            pair.innerHTML = "You've got " + countUnit + "pairs! Complete collecting until " + SL*13/ 2 + "pairs.";
+            setTimeout(function(){
+              pair.innerHTML = "";//「3秒間これにする」じゃないといけないみたいね。
+            }, sec*1000);
+          } else {
+            clearInterval(timer);
+            time.innerHTML = "Conplete with " + SL + " pairs!<br>Clear Time: " + elapsedTime + " sec.";
+            if(elapedTime<=60) pair.innerHTML = "Rank:S";
+          }
         }
         backTimer = NaN;
-      }, 200);
+      }, 500);
       
     } else {
       backTimer = setTimeout(function(){
@@ -114,13 +131,24 @@ function turn(e){
 
 
 function startTimer(){
-  timer = setInterval(showSecond, 1000);
+  timer = setInterval(showSecond, 1000); //なぜかこの状態でstartTimer()を発動しても処理が発生する。
 }
 
 function showSecond() {
   var nowTime = new Date();
   elapsedTime = Math.floor((nowTime - startTime) / 1000); //計算式のとこよくわからん
-  var string = '経過秒数: ' + elapsedTime + '秒';
+  var string = 'proceeded time: ' + elapsedTime + 'sec;';
   var time = document.getElementById('time');
   time.innerHTML = string;
+
+  if(elapsedTime>=600){
+    //finish = true;
+    clearInterval(timer);
+    time.innerHTML = "Time UP! ...You faild.";
+    var button = document.createElement('button');
+    button.innerHTML = "Reveal All Cards by Turning.";
+    result.appendChild(button);
+    //result.add Reveal All Cards to Turn.
+  }
+
 }
